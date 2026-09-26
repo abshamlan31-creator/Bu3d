@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>بُعد - عالمي الشخصي</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, system-ui, sans-serif; }
+:root {
+  --primary: #6366f1;
+  --accent: #ec4899;
+  --glass: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.15);
+  --text: #ffffff;
+  --text-muted: rgba(255,255,255,0.7);
+  --bg-base: #0a0a1a;
+}
+body.light-mode {
+  --glass: rgba(0,0,0,0.04);
+  --glass-border: rgba(0,0,0,0.1);
+  --text: #1a1a2e;
+  --text-muted: rgba(0,0,0,0.6);
+  --bg-base: #f5f5ff;
+}
+html, body {
+  min-height: 100vh;
+  background: var(--bg-base);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+body.bg-1 { background: linear-gradient(135deg, #1a0033 0%, #2d1b69 50%, #4a1e9e 100%); background-attachment: fixed; }
+body.bg-2 { background: linear-gradient(135deg, #0f2027 0%, #203a43 40%, #2c5364 100%); background-attachment: fixed; }
+body.bg-3 { background: linear-gradient(135deg, #2b0a1e 0%, #5c1f3d 40%, #8b3a62 100%); background-attachment: fixed; }
+body.bg-4 { background: linear-gradient(135deg, #0a2818 0%, #134e2b 40%, #1a6b3a 100%); background-attachment: fixed; }
+body.bg-5 { background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%); background-attachment: fixed; }
+body.bg-5::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent), radial-gradient(1px 1px at 40px 70px, #fff, transparent), radial-gradient(1px 1px at 90px 40px, #fff, transparent), radial-gradient(2px 2px at 130px 80px, #fff, transparent);
+  background-size: 200px 200px;
+  opacity: 0.5;
+  animation: twinkle 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.9; } }
+body.bg-6 { background: linear-gradient(180deg, #001f3f 0%, #003366 50%, #004d99 100%); background-attachment: fixed; }
+body.bg-7 { background: linear-gradient(180deg, #0a0e27 0%, #1a1a3e 50%, #2d1b4e 100%); background-attachment: fixed; }
+body.bg-8 { background: linear-gradient(135deg, #0a0a1a 0%, #12122e 100%); background-attachment: fixed; }
+body.bg-8::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: linear-gradient(rgba(99,102,241,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes gridMove { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
+#bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; display: none; }
+body.bg-9 { background: #0a0a1a; }
+body.bg-9 #bgCanvas { display: block; }
+.gradient-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at 20% 30%, rgba(99,102,241,0.25), transparent 50%), radial-gradient(circle at 80% 70%, rgba(236,72,153,0.25), transparent 50%);
+  z-index: -1; pointer-events: none; display: none;
+}
+body.bg-9 .gradient-overlay { display: block; }
+.login-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 9999;
+  background: linear-gradient(135deg, #0a0a1a, #1a0033, #2d1b69);
+}
+.login-box {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 28px;
+  padding: 40px 30px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+.login-logo { font-size: 55px; margin-bottom: 12px; }
+.login-box h1 {
+  font-size: 1.9rem;
+  background: linear-gradient(135deg, #fff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.login-subtitle { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 25px; }
+.input-group { text-align: right; margin-bottom: 15px; }
+.input-group label { display: block; font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 7px; font-weight: 600; }
+.input-group input, .input-group select, .input-group textarea {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  font-family: inherit;
+}
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(99,102,241,0.4);
+}
+.input-group input::placeholder { color: rgba(255,255,255,0.35); }
+.input-group select option { background: #1a1a3e; color: #fff; }
+.btn-login {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  font-family: inherit;
+}
+.login-error { color: #f87171; font-size: 0.85rem; margin-top: 10px; min-height: 18px; font-weight: 600; }
+.login-hint { color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-top: 15px; }
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(10,10,26,0.4);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.top-left, .top-right { display: flex; gap: 8px; align-items: center; }
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+}
+.icon-btn img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 16px;
+  text-align: center;
+}
+.dropdown-menu {
+  position: fixed;
+  top: 60px;
+  background: rgba(20,20,40,0.96);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 18px;
+  padding: 10px;
+  min-width: 260px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  z-index: 2000;
+  display: none;
+}
+.dropdown-menu.active { display: block; }
+#profileMenu { right: 15px; }
+#notifMenu { left: 15px; max-width: 340px; }
+#settingsMenu { right: 15px; }
+.dropdown-header { display: flex; align-items: center; gap: 10px; padding: 8px; }
+.dropdown-avatar {
+  width: 45px; height: 45px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.dropdown-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dropdown-name { font-weight: 700; font-size: 0.95rem; }
+.dropdown-sub { font-size: 0.75rem; color: var(--text-muted); }
+.dropdown-header-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; }
+.dropdown-header-row h3 { font-size: 0.95rem; }
+.text-btn { background: none; border: none; color: var(--primary); font-size: 0.8rem; cursor: pointer; font-weight: 600; font-family: inherit; }
+.dropdown-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 6px 0; }
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 11px 12px;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 10px;
+  text-align: right;
+  font-family: inherit;
+  gap: 8px;
+}
+.dropdown-item.danger { color: #f87171; }
+.switch { width: 42px; height: 22px; background: rgba(255,255,255,0.15); border-radius: 15px; position: relative; flex-shrink: 0; }
+.switch.active { background: linear-gradient(135deg, var(--primary), var(--accent)); }
+.switch-knob { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; background: white; border-radius: 50%; transition: transform 0.3s; }
+.switch.active .switch-knob { transform: translateX(-20px); }
+.notif-list { max-height: 380px; overflow-y: auto; }
+.notif-item {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  border-right: 3px solid transparent;
+  background: rgba(99,102,241,0.08);
+}
+.notif-item.unread { background: rgba(99,102,241,0.15); border-right-color: var(--primary); }
+.notif-item.urgent { border-right-color: #ef4444; }
+.notif-item.warning { border-right-color: #f59e0b; }
+.notif-item.success { border-right-color: #10b981; }
+.notif-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 3px; }
+.notif-time { font-size: 0.7rem; color: var(--text-muted); }
+.notif-empty { text-align: center; padding: 25px 15px; color: var(--text-muted); font-size: 0.85rem; }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  padding: 15px;
+  overflow-y: auto;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: rgba(20,20,40,0.98);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 22px;
+  padding: 22px;
+  max-width: 550px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.modal-header h2 { font-size: 1.15rem; }
+.close-btn {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  font-family: inherit;
+}
+.btn-secondary {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+.btn-danger {
+  background: rgba(239,68,68,0.2);
+  color: #f87171;
+  border: 1px solid rgba(239,68,68,0.4);
+}
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+.theme-option {
+  aspect-ratio: 1.2;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+.theme-option.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(99,102,241,0.4); }
+.theme-option[data-theme="bg-1"] { background: linear-gradient(135deg, #1a0033, #4a1e9e); }
+.theme-option[data-theme="bg-2"] { background: linear-gradient(135deg, #0f2027, #2c5364); }
+.theme-option[data-theme="bg-3"] { background: linear-gradient(135deg, #2b0a1e, #8b3a62); }
+.theme-option[data-theme="bg-4"] { background: linear-gradient(135deg, #0a2818, #1a6b3a); }
+.theme-option[data-theme="bg-5"] { background: radial-gradient(ellipse at bottom, #1b2735, #090a0f); }
+.theme-option[data-theme="bg-6"] { background: linear-gradient(180deg, #001f3f, #004d99); }
+.theme-option[data-theme="bg-7"] { background: linear-gradient(180deg, #0a0e27, #2d1b4e); }
+.theme-option[data-theme="bg-8"] { background: linear-gradient(135deg, #0a0a1a, #12122e); }
+.theme-option[data-theme="bg-9"] { background: #0a0a1a; border: 3px solid #6366f1; }
+.main-site { display: none; }
+.container { max-width: 1300px; margin: 0 auto; padding: 80px 15px 90px; }
+.header { text-align: center; margin-bottom: 30px; }
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  box-shadow: 0 0 45px rgba(99,102,241,0.6);
+  border: 3px solid rgba(255,255,255,0.2);
+  overflow: hidden;
+  cursor: pointer;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.header h1 {
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, #fff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.header p { color: var(--text-muted); font-size: 1rem; }
+.search-add-bar { display: flex; gap: 10px; max-width: 700px; margin: 0 auto 40px; }
+.search-bar { flex: 1; }
+.search-bar input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 50px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  color: var(--text);
+  font-size: 0.95rem;
+  outline: none;
+  font-family: inherit;
+}
+.search-bar input::placeholder { color: var(--text-muted); }
+.btn-add {
+  padding: 14px 20px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.section { margin-bottom: 35px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.section-header .icon { font-size: 1.4rem; }
+.section-header h2 { font-size: 1.25rem; }
+.section-header .line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--glass-border), transparent); min-width: 20px; }
+.section-actions { display: flex; gap: 5px; }
+.section-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(236,72,153,0.3));
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+.card-icon img { width: 100%; height: 100%; object-fit: cover; }
+.card-title { font-weight: 600; font-size: 0.9rem; }
+.card-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+.card-actions {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 3px;
+}
+.card-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  border: none;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  cursor: pointer;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.gallery-item {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+}
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.task-list { display: flex; flex-direction: column; gap: 8px; }
+.task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  position: relative;
+}
+.task input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+.task-text { flex: 1; font-size: 0.9rem; }
+.task.done .task-text { text-decoration: line-through; opacity: 0.5; }
+.task-time {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.05);
+  padding: 3px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.task-time.overdue { background: rgba(239,68,68,0.2); color: #f87171; }
+.task-time.soon { background: rgba(245,158,11,0.2); color: #fbbf24; }
+.empty-state {
+  text-align: center;
+  padding: 35px 15px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  background: var(--glass);
+  border: 1px dashed var(--glass-border);
+  border-radius: 16px;
+}
+.footer {
+  text-align: center;
+  padding: 30px 0 15px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 30px;
+  border-top: 1px solid var(--glass-border);
+}
+.footer .heart { color: var(--accent); }
+.footer-sub { font-size: 0.7rem; opacity: 0.6; margin-top: 5px; }
+.fab {
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border: none;
+  color: white;
+  font-size: 26px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(99,102,241,0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+.toast {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  padding: 14px 20px;
+  background: rgba(20,20,40,0.98);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transform: translateY(150%);
+  transition: transform 0.4s;
+  z-index: 10000;
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); }
+.toast.success { border-right: 4px solid #10b981; }
+.toast.error { border-right: 4px solid #ef4444; }
+.toast.info { border-right: 4px solid var(--primary); }
+.section-type-hint {
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+@media (max-width: 640px) {
+  .header h1 { font-size: 1.7rem; }
+  .avatar { width: 85px; height: 85px; font-size: 36px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .container { padding: 75px 12px 80px; }
+  .dropdown-menu { min-width: 240px; max-width: 90vw; }
+}
+</style>
+</head>
+<body class="bg-1">
+<canvas id="bgCanvas"></canvas>
+<div class="gradient-overlay"></div>
+
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <div class="login-logo">🌌</div>
+    <h1>بُعد</h1>
+    <p class="login-subtitle">عالمي الشخصي</p>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="input-group">
+        <label>👤 اسم المستخدم</label>
+        <input type="text" id="username" placeholder="admin" autocomplete="username" required>
+      </div>
+      <div class="input-group">
+        <label>🔒 كلمة السر</label>
+        <input type="password" id="password" placeholder="••••••" autocomplete="current-password" required>
+      </div>
+      <div id="loginError" class="login-error"></div>
+      <button type="submit" class="btn-login">دخول</button>
+    </form>
+    <p class="login-hint">🔐 محمي بتشفير SHA-256</p>
+  </div>
+</div>
+
+<div id="changePassScreen" class="login-screen" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo">🔐</div>
+    <h1>تغيير كلمة السر</h1>
+    <p class="login-subtitle">يجب تغيير كلمة السر الافتراضية</p>
+    <form id="changePassForm" onsubmit="handleChangePassword(event)">
+      <div class="input-group">
+        <label>🔑 كلمة السر الجديدة</label>
+        <input type="password" id="newPassword" placeholder="6 أحرف على الأقل" minlength="6" required>
+      </div>
+      <div class="input-group">
+        <label>🔁 تأكيد كلمة السر</label>
+        <input type="password" id="confirmPassword" placeholder="أعد كتابتها" minlength="6" required>
+      </div>
+      <div id="changePassError" class="login-error"></div>
+      <button type="submit" class="btn-login">حفظ كلمة السر</button>
+    </form>
+  </div>
+</div>
+
+<div id="mainSite" class="main-site">
+
+  <div class="top-bar">
+    <div class="top-left">
+      <button class="icon-btn" onclick="toggleProfileMenu(event)" title="الملف الشخصي">
+        <span id="profileAvatarSmall">👤</span>
+      </button>
+      <button class="icon-btn" onclick="toggleNotifications(event)" title="التنبيهات">
+        🔔
+        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+      </button>
+    </div>
+    <div class="top-right">
+      <button class="icon-btn" onclick="toggleSettings(event)" title="الإعدادات">⚙️</button>
+    </div>
+  </div>
+
+  <div class="dropdown-menu" id="profileMenu">
+    <div class="dropdown-header">
+      <div class="dropdown-avatar" id="dropdownAvatar">👤</div>
+      <div>
+        <div class="dropdown-name" id="dropdownName">مدير</div>
+        <div class="dropdown-sub">admin</div>
+      </div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item" onclick="document.getElementById('avatarUploadMain').click()">🖼️ تغيير صورة البروفايل</button>
+    <input type="file" id="avatarUploadMain" accept="image/*" hidden onchange="uploadAvatar(event)">
+    <button class="dropdown-item" onclick="openThemePanel()">🎨 تغيير الخلفية</button>
+    <button class="dropdown-item" onclick="openProfileSettings()">✏️ تعديل الاسم</button>
+    <div class="dropdown-divider"></div>
+    <div class="dropdown-item" onclick="toggleDarkMode()">
+      <span>🌙 الوضع الليلي</span>
+      <div class="switch" id="darkModeSwitch"><div class="switch-knob"></div></div>
+    </div>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item danger" onclick="handleLogout()">🚪 تسجيل الخروج</button>
+    <button class="dropdown-item danger" onclick="resetAllData()">⚠️ مسح كل البيانات</button>
+  </div>
+
+  <div class="dropdown-menu" id="notifMenu">
+    <div class="dropdown-header-row">
+      <h3>🔔 التنبيهات</h3>
+      <button class="text-btn" onclick="clearAllNotifications()">مسح الكل</button>
+    </div>
+    <div class="dropdown-divider"></div>
+    <div id="notifList" class="notif-list"></div>
+  </div>
+
+  <div class="dropdown-menu" id="settingsMenu">
+    <div class="dropdown-header-row">
+      <h3>⚙️ الإعدادات</h3>
+    </div>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item" onclick="exportData()">📥 تصدير البيانات</button>
+    <button class="dropdown-item" onclick="document.getElementById('importFile').click()">📤 استيراد البيانات</button>
+    <input type="file" id="importFile" accept=".json" hidden onchange="importData(event)">
+    <button class="dropdown-item" onclick="showStats()">📊 إحصائيات</button>
+    <button class="dropdown-item" onclick="showAbout()">ℹ️ حول الموقع</button>
+  </div>
+
+  <div class="modal-overlay" id="themeModal" onclick="if(event.target===this)closeModal('themeModal')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>🎨 اختر خلفيتك</h2>
+        <button class="close-btn" onclick="closeModal('themeModal')">✕</button>
+      </div>
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="itemModal" onclick="if(event.target===this)closeModal('itemModal')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="itemModalTitle">➕ إضافة عنصر</h2>
+        <button class="close-btn" onclick="closeModal('itemModal')">✕</button>
+      </div>
+      <form id="itemForm" onsubmit="saveItem(event)">
+        <input type="hidden" id="editItemId">
+        <input type="hidden" id="editSectionId">
+        <div class="input-group">
+          <label>📝 العنوان</label>
+          <input type="text" id="itemTitle" required>
+        </div>
+        <div class="input-group">
+          <label>📄 الوصف</label>
+          <input type="text" id="itemDesc">
+        </div>
+        <div class="input-group" id="itemUrlGroup">
+          <label>🔗 الرابط</label>
+          <input type="url" id="itemUrl" placeholder="https://...">
+        </div>
+        <div class="input-group" id="itemFileGroup" style="display:none;">
+          <label>📎 الملف</label>
+          <input type="file" id="itemFile">
+        </div>
+        <div class="input-group">
+          <label>🎨 الأيقونة (إيموجي أو رابط صورة)</label>
+          <input type="text" id="itemIcon" placeholder="🌐" value="📌">
+        </div>
+        <div class="input-group">
+          <label>📅 تاريخ (للمهام فقط)</label>
+          <input type="date" id="itemDate">
+        </div>
+        <button type="submit" class="btn-primary">💾 حفظ</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="sectionModal" onclick="if(event.target===this)closeModal('sectionModal')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="sectionModalTitle">➕ إضافة قسم</h2>
+        <button class="close-btn" onclick="closeModal('sectionModal')">✕</button>
+      </div>
+      <form id="sectionForm" onsubmit="saveSection(event)">
+        <input type="hidden" id="editSectionIdField">
+        <div class="input-group">
+          <label>📝 اسم القسم</label>
+          <input type="text" id="sectionName" required placeholder="مثل: مواقعي">
+        </div>
+        <div class="input-group">
+          <label>🎨 نوع القسم</label>
+          <select id="sectionType" onchange="updateSectionTypeHint()">
+            <option value="sites">🌐 مواقع (روابط)</option>
+            <option value="files">📁 ملفات (رفع فعلي)</option>
+            <option value="gallery">🖼️ ألبوم صور</option>
+            <option value="apps">📱 تطبيقات</option>
+            <option value="notes">📝 ملاحظات</option>
+            <option value="tasks">✅ مهام</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>🎯 الأيقونة (إيموجي)</label>
+          <input type="text" id="sectionIcon" value="📌" maxlength="4">
+        </div>
+        <div class="section-type-hint" id="sectionTypeHint">
+          💡 كل نوع قسم يعرض العناصر بطريقة مختلفة.
+        </div>
+        <button type="submit" class="btn-primary">💾 حفظ القسم</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="profileModal" onclick="if(event.target===this)closeModal('profileModal')">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>✏️ تعديل الملف الشخصي</h2>
+        <button class="close-btn" onclick="closeModal('profileModal')">✕</button>
+      </div>
+      <form id="profileForm" onsubmit="saveProfile(event)">
+        <div class="input-group">
+          <label>👤 اسمك المعروض</label>
+          <input type="text" id="profileDisplayName" placeholder="مدير">
+        </div>
+        <div class="input-group">
+          <label>💬 الوصف الشخصي</label>
+          <input type="text" id="profileBio" placeholder="عالمي الشخصي">
+        </div>
+        <div class="input-group">
+          <label>🔑 كلمة سر جديدة (اتركها فارغة للإبقاء على الحالية)</label>
+          <input type="password" id="profileNewPass" minlength="6">
+        </div>
+        <button type="submit" class="btn-primary">💾 حفظ</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+    <header class="header">
+      <div class="avatar" id="avatar" onclick="document.getElementById('avatarUploadMain').click()">
+        <span id="avatarText">👤</span>
+        <img id="avatarImg" style="display:none;" alt="صورة البروفايل">
+      </div>
+      <h1 id="siteTitle">بُعد</h1>
+      <p id="siteSubtitle">عالمي الشخصي</p>
+    </header>
+
+    <div class="search-add-bar">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث في كل شيء...">
+      </div>
+      <button class="btn-add" onclick="openAddSection()">➕ قسم</button>
+    </div>
+
+    <div id="sectionsContainer"></div>
+
+    <footer class="footer">
+      <p>صُنع بـ <span class="heart">♥</span> — <span id="footerName">بُعد</span> © 2025</p>
+      <p class="footer-sub">موقعك الشخصي</p>
+    </footer>
+  </div>
+
+  <button class="fab" onclick="quickAdd()" title="إضافة سريعة">+</button>
+</div>
+
+<div id="toast" class="toast"></div>
+<script>
+const USERS = { admin: { passHash: null, isDefault: true, displayName: 'مدير', bio: 'عالمي الشخصي' } };
+const DEFAULT_PASSWORD = '123';
+
+async function sha256(text) {
+  const buf = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+let currentUser = null;
+let appData = null;
+
+function loadData() {
+  const saved = localStorage.getItem('b3d_data');
+  if (saved) {
+    try { appData = JSON.parse(saved); } catch(e) { appData = null; }
+  }
+  if (!appData) {
+    appData = {
+      profile: {
+        displayName: 'مدير',
+        bio: 'عالمي الشخصي',
+        avatar: null,
+        passwordHash: null,
+        isDefaultPassword: true
+      },
+      theme: 'bg-1',
+      darkMode: true,
+      sections: [
+        {
+          id: 'sec_sites',
+          name: 'مواقعي',
+          icon: '🌐',
+          type: 'sites',
+          items: [
+            { id: 'i1', title: 'GitHub', desc: 'مشاريعي البرمجية', icon: '🐙', url: 'https://github.com', type: 'link' },
+            { id: 'i2', title: 'YouTube', desc: 'قناتي', icon: '▶️', url: 'https://youtube.com', type: 'link' },
+            { id: 'i3', title: 'Twitter / X', desc: 'حسابي الشخصي', icon: '🐦', url: 'https://twitter.com', type: 'link' },
+            { id: 'i4', title: 'LinkedIn', desc: 'ملفي المهني', icon: '💼', url: 'https://linkedin.com', type: 'link' },
+            { id: 'i5', title: 'Notion', desc: 'ملاحظاتي', icon: '📝', url: 'https://notion.so', type: 'link' }
+          ]
+        },
+        {
+          id: 'sec_ai',
+          name: 'أدوات الذكاء الاصطناعي',
+          icon: '🤖',
+          type: 'sites',
+          items: [
+            { id: 'a1', title: 'ChatGPT', desc: 'محادثة ذكية', icon: '💬', url: 'https://chat.openai.com', type: 'link' },
+            { id: 'a2', title: 'Claude', desc: 'مساعد ذكي', icon: '🧠', url: 'https://claude.ai', type: 'link' },
+            { id: 'a3', title: 'Gemini', desc: 'Google AI', icon: '✨', url: 'https://gemini.google.com', type: 'link' },
+            { id: 'a4', title: 'Midjourney', desc: 'توليد الصور', icon: '🎨', url: 'https://midjourney.com', type: 'link' },
+            { id: 'a5', title: 'Perplexity', desc: 'بحث ذكي', icon: '🔎', url: 'https://perplexity.ai', type: 'link' },
+            { id: 'a6', title: 'Runway', desc: 'تحرير الفيديو AI', icon: '🎬', url: 'https://runwayml.com', type: 'link' }
+          ]
+        },
+        {
+          id: 'sec_files',
+          name: 'ملفاتي',
+          icon: '📁',
+          type: 'files',
+          items: [
+            { id: 'f1', title: 'السيرة الذاتية.pdf', desc: '2.4 MB', icon: '📄', type: 'file', fileData: null },
+            { id: 'f2', title: 'تقرير_المشروع.xlsx', desc: '1.1 MB', icon: '📊', type: 'file', fileData: null }
+          ]
+        },
+        {
+          id: 'sec_tasks',
+          name: 'مهامي',
+          icon: '✅',
+          type: 'tasks',
+          items: [
+            { id: 't1', title: 'مراجعة تصميم الموقع الجديد', desc: 'اليوم', icon: '📝', type: 'note', done: false, date: new Date().toISOString().split('T')[0] },
+            { id: 't2', title: 'كتابة مقال عن الذكاء الاصطناعي', desc: 'غداً', icon: '📝', type: 'note', done: false, date: new Date(Date.now() + 86400000).toISOString().split('T')[0] },
+            { id: 't3', title: 'الرد على إيميلات العملاء', desc: '10:00 ص', icon: '📝', type: 'note', done: false, date: new Date().toISOString().split('T')[0] }
+          ]
+        }
+      ],
+      notifications: []
+    };
+  }
+  if (!appData.profile) appData.profile = { displayName: 'مدير', bio: 'عالمي الشخصي', avatar: null, passwordHash: null, isDefaultPassword: true };
+  if (!appData.notifications) appData.notifications = [];
+  if (!appData.theme) appData.theme = 'bg-1';
+  if (appData.darkMode === undefined) appData.darkMode = true;
+  return appData;
+}
+
+function saveData() {
+  try { localStorage.setItem('b3d_data', JSON.stringify(appData)); } catch(e) { console.error(e); }
+}
+
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast ' + type, 2800);
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value;
+  const err = document.getElementById('loginError');
+  err.textContent = '';
+
+  if (u !== 'admin') { err.textContent = '❌ اسم المستخدم غير صحيح'; return; }
+
+  let valid = false;
+  if (!appData.profile.passwordHash) {
+    valid = (p === DEFAULT_PASSWORD);
+  } else {
+    const hash = await sha256(p);
+    valid = (hash === appData.profile.passwordHash);
+  }
+
+  if (!valid) { err.textContent = '❌ كلمة السر غير صحيحة'; return; }
+
+  currentUser = u;
+  sessionStorage.setItem('b3d_logged', '1');
+
+  if (appData.profile.isDefaultPassword) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('changePassScreen').style.display = 'flex';
+    return;
+  }
+  enterSite();
+}
+
+async function handleChangePassword(e) {
+  e.preventDefault();
+  const n = document.getElementById('newPassword').value;
+  const c = document.getElementById('confirmPassword').value;
+  const err = document.getElementById('changePassError');
+  err.textContent = '';
+  if (n !== c) { err.textContent = '❌ كلمتا السر غير متطابقتين'; return; }
+  if (n.length < 6) { err.textContent = '❌ كلمة السر قصيرة جداً'; return; }
+  if (n === DEFAULT_PASSWORD) { err.textContent = '❌ اختر كلمة سر مختلفة عن الافتراضية'; return; }
+  appData.profile.passwordHash = await sha256(n);
+  appData.profile.isDefaultPassword = false;
+  saveData();
+  showToast('✅ تم تغيير كلمة السر', 'success');
+  enterSite();
+}
+
+function enterSite() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('changePassScreen').style.display = 'none';
+  document.getElementById('mainSite').style.display = 'block';
+  applyTheme();
+  applyProfile();
+  renderAll();
+  checkNotifications();
+  setInterval(checkNotifications, 60000);
+}
+
+function handleLogout() {
+  if (!confirm('هل تريد تسجيل الخروج؟')) return;
+  sessionStorage.removeItem('b3d_logged');
+  currentUser = null;
+  location.reload();
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+}
+
+function toggleProfileMenu(e) {
+  e.stopPropagation();
+  const m = document.getElementById('profileMenu');
+  const wasActive = m.classList.contains('active');
+  closeAllDropdowns();
+  if (!wasActive) m.classList.add('active');
+}
+
+function toggleNotifications(e) {
+  e.stopPropagation();
+  const m = document.getElementById('notifMenu');
+  const wasActive = m.classList.contains('active');
+  closeAllDropdowns();
+  if (!wasActive) {
+    m.classList.add('active');
+    renderNotifications();
+    appData.notifications.forEach(n => n.unread = false);
+    saveData();
+    updateNotifBadge();
+  }
+}
+
+function toggleSettings(e) {
+  e.stopPropagation();
+  const m = document.getElementById('settingsMenu');
+  const wasActive = m.classList.contains('active');
+  closeAllDropdowns();
+  if (!wasActive) m.classList.add('active');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dropdown-menu') && !e.target.closest('.icon-btn')) closeAllDropdowns();
+});
+
+function applyTheme() {
+  document.body.className = appData.theme + (appData.darkMode ? '' : ' light-mode');
+  if (appData.theme === 'bg-9') startParticles();
+  else stopParticles();
+}
+
+function applyProfile() {
+  const p = appData.profile;
+  document.getElementById('siteTitle').textContent = p.displayName;
+  document.getElementById('siteSubtitle').textContent = p.bio;
+  document.getElementById('footerName').textContent = p.displayName;
+  document.getElementById('dropdownName').textContent = p.displayName;
+  if (p.avatar) {
+    document.getElementById('avatarImg').src = p.avatar;
+    document.getElementById('avatarImg').style.display = 'block';
+    document.getElementById('avatarText').style.display = 'none';
+    const d = document.getElementById('dropdownAvatar');
+    d.innerHTML = '<img src="' + p.avatar + '">';
+    document.getElementById('profileAvatarSmall').innerHTML = '<img src="' + p.avatar + '">';
+  }
+  const sw = document.getElementById('darkModeSwitch');
+  if (appData.darkMode) sw.classList.add('active'); else sw.classList.remove('active');
+}
+
+function toggleDarkMode() {
+  appData.darkMode = !appData.darkMode;
+  saveData();
+  applyTheme();
+  applyProfile();
+  showToast(appData.darkMode ? '🌙 الوضع الليلي' : '☀️ الوضع النهاري', 'info');
+}
+
+function uploadAvatar(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    appData.profile.avatar = ev.target.result;
+    saveData();
+    applyProfile();
+    showToast('✅ تم تحديث الصورة', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function openThemePanel() {
+  closeAllDropdowns();
+  const grid = document.getElementById('themeGrid');
+  const themes = [
+    { id: 'bg-1', name: 'حالم بنفسجي' },
+    { id: 'bg-2', name: 'غروب سماوي' },
+    { id: 'bg-3', name: 'وردة ذهبية' },
+    { id: 'bg-4', name: 'أخضر زمردي' },
+    { id: 'bg-5', name: 'نجوم متلألئة' },
+    { id: 'bg-6', name: 'موجات المحيط' },
+    { id: 'bg-7', name: 'شفق قطبي' },
+    { id: 'bg-8', name: 'شبكة مستقبلية' },
+    { id: 'bg-9', name: '✨ الجزيئات التفاعلية' }
+  ];
+  grid.innerHTML = themes.map(t => 
+    '<div class="theme-option ' + (appData.theme === t.id ? 'active' : '') + '" data-theme="' + t.id + '" onclick="selectTheme(\'' + t.id + '\')">' + t.name + '</div>'
+  ).join('');
+  document.getElementById('themeModal').classList.add('active');
+}
+
+function selectTheme(id) {
+  appData.theme = id;
+  saveData();
+  applyTheme();
+  openThemePanel();
+  showToast('🎨 تم تغيير الخلفية', 'success');
+}
+
+function openProfileSettings() {
+  closeAllDropdowns();
+  document.getElementById('profileDisplayName').value = appData.profile.displayName;
+  document.getElementById('profileBio').value = appData.profile.bio;
+  document.getElementById('profileNewPass').value = '';
+  document.getElementById('profileModal').classList.add('active');
+}
+
+async function saveProfile(e) {
+  e.preventDefault();
+  appData.profile.displayName = document.getElementById('profileDisplayName').value || 'مدير';
+  appData.profile.bio = document.getElementById('profileBio').value || 'عالمي الشخصي';
+  const np = document.getElementById('profileNewPass').value;
+  if (np) {
+    if (np.length < 6) { showToast('❌ كلمة السر قصيرة', 'error'); return; }
+    appData.profile.passwordHash = await sha256(np);
+    appData.profile.isDefaultPassword = false;
+  }
+  saveData();
+  applyProfile();
+  closeModal('profileModal');
+  showToast('✅ تم الحفظ', 'success');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+let particles = [], particleAnim = null, pCtx = null, pCanvas = null;
+
+function startParticles() {
+  if (particleAnim) return;
+  pCanvas = document.getElementById('bgCanvas');
+  if (!pCanvas) return;
+  pCtx = pCanvas.getContext('2d');
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  particles = [];
+  const count = Math.min(70, Math.floor(window.innerWidth / 15));
+  for (let i = 0; i < count; i++) particles.push(newParticle());
+  animateParticles();
+}
+
+function stopParticles() {
+  if (particleAnim) cancelAnimationFrame(particleAnim);
+  particleAnim = null;
+  if (pCtx && pCanvas) pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+}
+
+function resizeCanvas() {
+  if (!pCanvas) return;
+  pCanvas.width = window.innerWidth;
+  pCanvas.height = window.innerHeight;
+}
+
+function newParticle() {
+  return {
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: (Math.random() - 0.5) * 0.5,
+    size: Math.random() * 2 + 1,
+    color: ['#6366f1', '#8b5cf6', '#ec4899', '#a5b4fc'][Math.floor(Math.random() * 4)]
+  };
+}
+
+function animateParticles() {
+  pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > pCanvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > pCanvas.height) p.vy *= -1;
+    pCtx.beginPath();
+    pCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    pCtx.fillStyle = p.color;
+    pCtx.globalAlpha = 0.7;
+    pCtx.fill();
+  });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < 130) {
+        pCtx.beginPath();
+        pCtx.strokeStyle = particles[i].color;
+        pCtx.globalAlpha = (1 - d / 130) * 0.18;
+        pCtx.lineWidth = 1;
+        pCtx.moveTo(particles[i].x, particles[i].y);
+        pCtx.lineTo(particles[j].x, particles[j].y);
+        pCtx.stroke();
+      }
+    }
+  }
+  particleAnim = requestAnimationFrame(animateParticles);
+}
+</script>
+<script>
+function renderAll() {
+  renderSections();
+  updateNotifBadge();
+}
+
+function renderSections() {
+  const container = document.getElementById('sectionsContainer');
+  if (!appData.sections || appData.sections.length === 0) {
+    container.innerHTML = '<div class="empty-state">لا توجد أقسام بعد. اضغط "➕ قسم" لإضافة أول قسم!</div>';
+    return;
+  }
+  container.innerHTML = appData.sections.map(sec => renderSection(sec)).join('');
+}
+
+function renderSection(sec) {
+  let content = '';
+  if (!sec.items || sec.items.length === 0) {
+    content = '<div class="empty-state">لا توجد عناصر. اضغط ➕ لإضافة عنصر.</div>';
+  } else if (sec.type === 'gallery') {
+    content = '<div class="gallery-grid">' + sec.items.map(it => renderGalleryItem(it, sec.id)).join('') + '</div>';
+  } else if (sec.type === 'tasks') {
+    content = '<div class="task-list">' + sec.items.map(it => renderTask(it, sec.id)).join('') + '</div>';
+  } else {
+    content = '<div class="grid">' + sec.items.map(it => renderCard(it, sec.id)).join('') + '</div>';
+  }
+  return '<section class="section" data-section="' + sec.id + '">' +
+    '<div class="section-header">' +
+      '<span class="icon">' + sec.icon + '</span>' +
+      '<h2>' + escapeHtml(sec.name) + '</h2>' +
+      '<div class="line"></div>' +
+      '<div class="section-actions">' +
+        '<button class="section-btn" onclick="openAddItem(\'' + sec.id + '\')" title="إضافة عنصر">➕</button>' +
+        '<button class="section-btn" onclick="openEditSection(\'' + sec.id + '\')" title="تعديل القسم">✏️</button>' +
+        '<button class="section-btn danger" onclick="deleteSection(\'' + sec.id + '\')" title="حذف القسم">🗑️</button>' +
+      '</div>' +
+    '</div>' + content + '</section>';
+}
+
+function renderCard(it, secId) {
+  const iconHtml = (it.icon && (it.icon.startsWith('http') || it.icon.startsWith('data:')))
+    ? '<img src="' + it.icon + '" alt="">'
+    : (it.icon || '📌');
+  const clickAction = it.url
+    ? 'onclick="window.open(\'' + escapeAttr(it.url) + '\', \'_blank\')"'
+    : (it.fileData ? 'onclick="downloadFile(\'' + secId + '\', \'' + it.id + '\')"' : '');
+  return '<div class="card" ' + clickAction + '>' +
+    '<div class="card-actions">' +
+      '<button class="card-btn" onclick="event.stopPropagation();openEditItem(\'' + secId + '\',\'' + it.id + '\')" title="تعديل">✏️</button>' +
+      '<button class="card-btn" onclick="event.stopPropagation();deleteItem(\'' + secId + '\',\'' + it.id + '\')" title="حذف">🗑️</button>' +
+    '</div>' +
+    '<div class="card-icon">' + iconHtml + '</div>' +
+    '<div class="card-title">' + escapeHtml(it.title || '') + '</div>' +
+    '<div class="card-desc">' + escapeHtml(it.desc || '') + '</div>' +
+  '</div>';
+}
+
+function renderGalleryItem(it, secId) {
+  return '<div class="gallery-item">' +
+    '<div class="card-actions">' +
+      '<button class="card-btn" onclick="event.stopPropagation();openEditItem(\'' + secId + '\',\'' + it.id + '\')">✏️</button>' +
+      '<button class="card-btn" onclick="event.stopPropagation();deleteItem(\'' + secId + '\',\'' + it.id + '\')">🗑️</button>' +
+    '</div>' +
+    '<img src="' + (it.fileData || it.icon || '') + '" alt="' + escapeAttr(it.title || '') + '" onclick="viewImage(\'' + secId + '\',\'' + it.id + '\')">' +
+  '</div>';
+}
+
+function renderTask(it, secId) {
+  const timeLabel = formatTaskTime(it.date);
+  const cls = timeLabel.cls;
+  return '<div class="task' + (it.done ? ' done' : '') + '">' +
+    '<input type="checkbox" ' + (it.done ? 'checked' : '') + ' onchange="toggleTask(\'' + secId + '\',\'' + it.id + '\')">' +
+    '<span class="task-text">' + escapeHtml(it.title || '') + '</span>' +
+    '<span class="task-time ' + cls + '">' + timeLabel.text + '</span>' +
+    '<button class="card-btn" onclick="openEditItem(\'' + secId + '\',\'' + it.id + '\')">✏️</button>' +
+    '<button class="card-btn" onclick="deleteItem(\'' + secId + '\',\'' + it.id + '\')">🗑️</button>' +
+  '</div>';
+}
+
+function formatTaskTime(dateStr) {
+  if (!dateStr) return { text: 'بدون تاريخ', cls: '' };
+  const d = new Date(dateStr);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const target = new Date(d); target.setHours(0, 0, 0, 0);
+  const diff = Math.floor((target - today) / 86400000);
+  if (diff < 0) return { text: 'متأخرة ' + Math.abs(diff) + ' يوم', cls: 'overdue' };
+  if (diff === 0) return { text: 'اليوم', cls: 'soon' };
+  if (diff === 1) return { text: 'غداً', cls: '' };
+  if (diff <= 3) return { text: 'بعد ' + diff + ' أيام', cls: 'soon' };
+  return { text: dateStr, cls: '' };
+}
+
+function toggleTask(secId, itemId) {
+  const sec = appData.sections.find(s => s.id === secId);
+  if (!sec) return;
+  const it = sec.items.find(i => i.id === itemId);
+  if (!it) return;
+  it.done = !it.done;
+  saveData();
+  renderSections();
+}
+
+function openAddSection() {
+  document.getElementById('sectionModalTitle').textContent = '➕ إضافة قسم';
+  document.getElementById('editSectionIdField').value = '';
+  document.getElementById('sectionName').value = '';
+  document.getElementById('sectionType').value = 'sites';
+  document.getElementById('sectionIcon').value = '📌';
+  updateSectionTypeHint();
+  document.getElementById('sectionModal').classList.add('active');
+}
+
+function openEditSection(id) {
+  const sec = appData.sections.find(s => s.id === id);
+  if (!sec) return;
+  document.getElementById('sectionModalTitle').textContent = '✏️ تعديل القسم';
+  document.getElementById('editSectionIdField').value = id;
+  document.getElementById('sectionName').value = sec.name;
+  document.getElementById('sectionType').value = sec.type;
+  document.getElementById('sectionIcon').value = sec.icon;
+  updateSectionTypeHint();
+  document.getElementById('sectionModal').classList.add('active');
+}
+
+function updateSectionTypeHint() {
+  const t = document.getElementById('sectionType').value;
+  const hints = {
+    sites: '🌐 قسم المواقع: أضف روابط لمواقعك. كل عنصر له رابط ويفتح في تاب جديد.',
+    files: '📁 قسم الملفات: أضف ملفاتك (PDF، Word، Excel...). يمكن تحميلها بالضغط.',
+    gallery: '🖼️ ألبوم الصور: أضف صوراً لعرضها في شبكة جمالية.',
+    apps: '📱 قسم التطبيقات: أضف تطبيقات مع روابط لتحميلها أو فتحها.',
+    notes: '📝 الملاحظات: أضف نصوصاً أو ملاحظات سريعة.',
+    tasks: '✅ المهام: أضف مهامك مع تاريخ استحقاق. ستحصل على تنبيهات.'
+  };
+  document.getElementById('sectionTypeHint').textContent = hints[t] || '';
+}
+
+function saveSection(e) {
+  e.preventDefault();
+  const name = document.getElementById('sectionName').value.trim();
+  const type = document.getElementById('sectionType').value;
+  const icon = document.getElementById('sectionIcon').value.trim() || '📌';
+  const editId = document.getElementById('editSectionIdField').value;
+  if (!name) return;
+  if (editId) {
+    const sec = appData.sections.find(s => s.id === editId);
+    if (sec) { sec.name = name; sec.type = type; sec.icon = icon; }
+  } else {
+    appData.sections.push({
+      id: 'sec_' + Date.now(),
+      name, type, icon,
+      items: []
+    });
+  }
+  saveData();
+  renderSections();
+  closeModal('sectionModal');
+  showToast('✅ تم حفظ القسم', 'success');
+}
+
+function deleteSection(id) {
+  const sec = appData.sections.find(s => s.id === id);
+  if (!sec) return;
+  if (!confirm('هل تريد حذف قسم "' + sec.name + '" مع كل محتوياته؟')) return;
+  appData.sections = appData.sections.filter(s => s.id !== id);
+  saveData();
+  renderSections();
+  showToast('🗑️ تم حذف القسم', 'info');
+}
+
+function openAddItem(secId) {
+  document.getElementById('itemModalTitle').textContent = '➕ إضافة عنصر';
+  document.getElementById('editItemId').value = '';
+  document.getElementById('editSectionId').value = secId;
+  document.getElementById('itemTitle').value = '';
+  document.getElementById('itemDesc').value = '';
+  document.getElementById('itemUrl').value = '';
+  document.getElementById('itemIcon').value = '📌';
+  document.getElementById('itemFile').value = '';
+  document.getElementById('itemDate').value = '';
+  const sec = appData.sections.find(s => s.id === secId);
+  const isFile = sec && (sec.type === 'files' || sec.type === 'gallery');
+  document.getElementById('itemUrlGroup').style.display = isFile ? 'none' : 'block';
+  document.getElementById('itemFileGroup').style.display = isFile ? 'block' : 'none';
+  document.getElementById('itemModal').classList.add('active');
+}
+
+function openEditItem(secId, itemId) {
+  const sec = appData.sections.find(s => s.id === secId);
+  if (!sec) return;
+  const it = sec.items.find(i => i.id === itemId);
+  if (!it) return;
+  document.getElementById('itemModalTitle').textContent = '✏️ تعديل العنصر';
+  document.getElementById('editItemId').value = itemId;
+  document.getElementById('editSectionId').value = secId;
+  document.getElementById('itemTitle').value = it.title || '';
+  document.getElementById('itemDesc').value = it.desc || '';
+  document.getElementById('itemUrl').value = it.url || '';
+  document.getElementById('itemIcon').value = it.icon || '📌';
+  document.getElementById('itemDate').value = it.date || '';
+  document.getElementById('itemFile').value = '';
+  const isFile = sec.type === 'files' || sec.type === 'gallery';
+  document.getElementById('itemUrlGroup').style.display = isFile ? 'none' : 'block';
+  document.getElementById('itemFileGroup').style.display = isFile ? 'block' : 'none';
+  document.getElementById('itemModal').classList.add('active');
+}
+
+function saveItem(e) {
+  e.preventDefault();
+  const secId = document.getElementById('editSectionId').value;
+  const editId = document.getElementById('editItemId').value;
+  const title = document.getElementById('itemTitle').value.trim();
+  const desc = document.getElementById('itemDesc').value.trim();
+  const url = document.getElementById('itemUrl').value.trim();
+  const icon = document.getElementById('itemIcon').value.trim() || '📌';
+  const date = document.getElementById('itemDate').value;
+  const fileInput = document.getElementById('itemFile');
+  const sec = appData.sections.find(s => s.id === secId);
+  if (!sec) return;
+  
+  const finishSave = (fileData) => {
+    if (editId) {
+      const it = sec.items.find(i => i.id === editId);
+      if (it) {
+        it.title = title; it.desc = desc; it.icon = icon; it.date = date;
+        if (url) it.url = url;
+        if (fileData) { it.fileData = fileData; it.icon = fileData; }
+      }
+    } else {
+      const newItem = {
+        id: 'it_' + Date.now(),
+        title, desc, icon, date,
+        type: sec.type === 'tasks' ? 'note' : (sec.type === 'sites' ? 'link' : 'file'),
+        done: false
+      };
+      if (url) newItem.url = url;
+      if (fileData) { newItem.fileData = fileData; newItem.icon = fileData; }
+      sec.items.push(newItem);
+    }
+    saveData();
+    renderSections();
+    closeModal('itemModal');
+    showToast('✅ تم الحفظ', 'success');
+    checkNotifications();
+  };
+
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = ev => finishSave(ev.target.result);
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    finishSave(null);
+  }
+}
+
+function deleteItem(secId, itemId) {
+  const sec = appData.sections.find(s => s.id === secId);
+  if (!sec) return;
+  if (!confirm('هل تريد حذف هذا العنصر؟')) return;
+  sec.items = sec.items.filter(i => i.id !== itemId);
+  saveData();
+  renderSections();
+  showToast('🗑️ تم الحذف', 'info');
+}
+
+function downloadFile(secId, itemId) {
+  const sec = appData.sections.find(s => s.id === secId);
+  if (!sec) return;
+  const it = sec.items.find(i => i.id === itemId);
+  if (!it || !it.fileData) return;
+  const a = document.createElement('a');
+  a.href = it.fileData;
+  a.download = it.title || 'file';
+  a.click();
+}
+
+function viewImage(secId, itemId) {
+  const sec = appData.sections.find(s => s.id === secId);
+  if (!sec) return;
+  const it = sec.items.find(i => i.id === itemId);
+  if (!it) return;
+  const src = it.fileData || it.icon;
+  if (!src) return;
+  const w = window.open('');
+  w.document.write('<html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;"><img src="' + src + '" style="max-width:100%;max-height:100%;"></body></html>');
+}
+
+function quickAdd() {
+  if (appData.sections.length === 0) {
+    openAddSection();
+  } else {
+    const last = appData.sections[appData.sections.length - 1];
+    openAddItem(last.id);
+  }
+}
+
+function checkNotifications() {
+  if (!appData || !appData.sections) return;
+  appData.notifications = appData.notifications.filter(n => !n.auto || n.read);
+  const today = new Date(); today.setHours(0,0,0,0);
+  appData.sections.forEach(sec => {
+    if (sec.type !== 'tasks') return;
+    sec.items.forEach(it => {
+      if (it.done || !it.date) return;
+      const existing = appData.notifications.find(n => n.taskId === it.id && n.auto && !n.read);
+      if (existing) return;
+      const d = new Date(it.date); d.setHours(0,0,0,0);
+      const diff = Math.floor((d - today) / 86400000);
+      let msg = null, level = null;
+      if (diff < 0) { msg = 'متأخرة منذ ' + Math.abs(diff) + ' يوم'; level = 'urgent'; }
+      else if (diff === 0) { msg = 'مستحقة اليوم'; level = 'warning'; }
+      else if (diff === 1) { msg = 'مستحقة غداً'; level = 'warning'; }
+      if (msg) {
+        appData.notifications.push({
+          id: 'n_' + Date.now() + '_' + Math.random(),
+          title: '⏰ ' + it.title,
+          body: msg,
+          level: level,
+          unread: true,
+          auto: true,
+          taskId: it.id,
+          sectionId: sec.id,
+          time: Date.now()
+        });
+      }
+    });
+  });
+  saveData();
+  updateNotifBadge();
+}
+
+function updateNotifBadge() {
+  const unread = appData.notifications.filter(n => n.unread).length;
+  const b = document.getElementById('notifBadge');
+  if (unread > 0) { b.textContent = unread; b.style.display = 'block'; }
+  else b.style.display = 'none';
+}
+
+function renderNotifications() {
+  const list = document.getElementById('notifList');
+  if (appData.notifications.length === 0) {
+    list.innerHTML = '<div class="notif-empty">🔕 لا توجد تنبيهات حالياً</div>';
+    return;
+  }
+  const sorted = [...appData.notifications].sort((a,b) => b.time - a.time);
+  list.innerHTML = sorted.map(n => 
+    '<div class="notif-item ' + (n.unread ? 'unread ' : '') + (n.level || '') + '" onclick="goToTask(\'' + (n.sectionId || '') + '\',\'' + (n.taskId || '') + '\')">' +
+      '<div class="notif-title">' + escapeHtml(n.title) + '</div>' +
+      '<div class="notif-time">' + escapeHtml(n.body) + ' · ' + timeAgo(n.time) + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function timeAgo(ts) {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return 'الآن';
+  if (diff < 3600) return Math.floor(diff / 60) + ' دقيقة';
+  if (diff < 86400) return Math.floor(diff / 3600) + ' ساعة';
+  return Math.floor(diff / 86400) + ' يوم';
+}
+
+function goToTask(secId, taskId) {
+  closeAllDropdowns();
+  const target = document.querySelector('[data-section="' + secId + '"]');
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearAllNotifications() {
+  appData.notifications = [];
+  saveData();
+  renderNotifications();
+  updateNotifBadge();
+  showToast('🔕 تم مسح التنبيهات', 'info');
+}
+
+function exportData() {
+  const data = JSON.stringify(appData, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'b3d-backup-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 تم تصدير البيانات', 'success');
+}
+
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!confirm('سيتم استبدال كل البيانات الحالية. متابعة؟')) return;
+      appData = data;
+      saveData();
+      location.reload();
+    } catch(err) { showToast('❌ ملف غير صالح', 'error'); }
+  };
+  reader.readAsText(file);
+}
+
+function showStats() {
+  closeAllDropdowns();
+  let items = 0, tasks = 0, done = 0, files = 0;
+  appData.sections.forEach(s => {
+    items += s.items.length;
+    if (s.type === 'tasks') {
+      tasks += s.items.length;
+      done += s.items.filter(i => i.done).length;
+    }
+    if (s.type === 'files') files += s.items.filter(i => i.fileData).length;
+  });
+  alert('📊 إحصائيات موقعك\n\n' +
+    '📁 الأقسام: ' + appData.sections.length + '\n' +
+    '📌 العناصر: ' + items + '\n' +
+    '✅ المهام: ' + done + ' / ' + tasks + '\n' +
+    '📎 الملفات المرفوعة: ' + files + '\n' +
+    '🔔 التنبيهات: ' + appData.notifications.length);
+}
+
+function showAbout() {
+  closeAllDropdowns();
+  alert('🌌 بُعد\n\nموقعك الشخصي المتكامل\n\n🔐 محمي بكلمة سر\n🎨 9 خلفيات مبتكرة\n🌙 وضع ليلي/نهاري\n➕ إضافة/تعديل/حذف\n🔔 نظام تنبيهات ذكي\n💾 نسخ احتياطي\n\nالإصدار 2.0');
+}
+
+function resetAllData() {
+  if (!confirm('⚠️ سيتم حذف كل البيانات نهائياً (الأقسام، المهام، الملفات، الصور). متابعة؟')) return;
+  if (!confirm('هل أنت متأكد 100%؟ لا يمكن التراجع!')) return;
+  localStorage.removeItem('b3d_data');
+  sessionStorage.removeItem('b3d_logged');
+  location.reload();
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function escapeAttr(s) {
+  return String(s || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+}
+
+appData = loadData();
+
+if (sessionStorage.getItem('b3d_logged') === '1') {
+  if (!appData.profile.isDefaultPassword) {
+    currentUser = 'admin';
+    enterSite();
+  } else {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('changePassScreen').style.display = 'flex';
+  }
+} else {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('mainSite').style.display = 'none';
+}
+
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('.section').forEach(section => {
+    const items = section.querySelectorAll('.card, .gallery-item, .task');
+    let visible = 0;
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      const show = !q || text.includes(q);
+      item.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    section.style.display = (q && visible === 0) ? 'none' : '';
+  });
+});
+</script>
+</body>
+</html>
