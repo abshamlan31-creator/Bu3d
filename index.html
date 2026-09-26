@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساحتي الشخصية</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+  :root {
+    --primary: #6366f1;
+    --secondary: #8b5cf6;
+    --accent: #ec4899;
+    --glass: rgba(255,255,255,0.08);
+    --glass-border: rgba(255,255,255,0.15);
+    --text: #ffffff;
+    --text-muted: rgba(255,255,255,0.7);
+  }
+
+  body {
+    min-height: 100vh;
+    background: #0a0a1a;
+    color: var(--text);
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -2;
+  }
+
+  .gradient-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle at 20% 30%, rgba(99,102,241,0.25), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(236,72,153,0.25), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139,92,246,0.15), transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+    animation: fadeDown 0.8s ease;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    box-shadow: 0 0 40px rgba(99,102,241,0.6);
+    border: 3px solid rgba(255,255,255,0.2);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s;
+    position: relative;
+  }
+
+  .avatar:hover { transform: scale(1.05); }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+  .header h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #fff, #a5b4fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+
+  .header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+  }
+
+  .search-bar {
+    max-width: 500px;
+    margin: 0 auto 50px;
+    position: relative;
+    animation: fadeUp 0.8s ease 0.2s backwards;
+  }
+
+  .search-bar input {
+    width: 100%;
+    padding: 16px 50px 16px 20px;
+    border-radius: 50px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    color: var(--text);
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .search-bar input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 30px rgba(99,102,241,0.4);
+  }
+
+  .search-bar input::placeholder { color: var(--text-muted); }
+
+  .search-bar::before {
+    content: '🔍';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    pointer-events: none;
+  }
+
+  .section {
+    margin-bottom: 50px;
+    animation: fadeUp 0.8s ease backwards;
+  }
+
+  .section:nth-child(1) { animation-delay: 0.3s; }
+  .section:nth-child(2) { animation-delay: 0.4s; }
+  .section:nth-child(3) { animation-delay: 0.5s; }
+  .section:nth-child(4) { animation-delay: 0.6s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .section-header h2 {
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-header .icon {
+    font-size: 1.6rem;
+  }
+
+  .section-header .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--glass-border), transparent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 18px;
+  }
+
+  .card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 22px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.05));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(139,92,246,0.6);
+    box-shadow: 0 20px 40px rgba(99,102,241,0.25);
+  }
+
+  .card:hover::before { opacity: 1; }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(236,72,153,0.3));
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .card-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .task {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    transition: all 0.3s;
+  }
+
+  .task:hover {
+    border-color: rgba(139,92,246,0.5);
+    transform: translateX(-5px);
+  }
+
+  .task input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--primary);
+    cursor: pointer;
+  }
+
+  .task-text {
+    flex: 1;
+    font-size: 0.95rem;
+  }
+
+  .task.done .task-text {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+
+  .task-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.05);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+  }
+
+  .file-card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .file-card:hover {
+    background: rgba(99,102,241,0.15);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+  }
+
+  .file-icon {
+    font-size: 1.8rem;
+  }
+
+  .file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .file-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-size {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .add-image-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(99,102,241,0.5);
+    transition: all 0.3s;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .add-image-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 15px 40px rgba(236,72,153,0.6);
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+  }
+
+  .gallery-item {
+    aspect-ratio: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    border: 1px solid var(--glass-border);
+    transition: transform 0.3s;
+  }
+
+  .gallery-item:hover { transform: scale(1.03); }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .gallery-item:hover img { transform: scale(1.1); }
+
+  .gallery-item .delete-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(220,38,38,0.9);
+    color: white;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 14px;
+  }
+
+  .gallery-item:hover .delete-btn { opacity: 1; }
+
+  .footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 40px;
+    border-top: 1px solid var(--glass-border);
+  }
+
+  .footer .heart { color: var(--accent); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .header h1 { font-size: 1.8rem; }
+    .avatar { width: 90px; height: 90px; font-size: 38px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .container { padding: 25px 15px 60px; }
+    .add-image-btn { bottom: 20px; left: 20px; width: 50px; height: 50px; }
+  }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--primary), var(--accent));
+    border-radius: 10px;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="gradient-bg"></div>
+
+<div class="container">
+
+  <header class="header">
+    <div class="avatar" id="avatar" onclick="document.getElementById('avatarInput').click()">
+      <span id="avatarText">👤</span>
+      <img id="avatarImg" style="display:none;">
+    </div>
+    <input type="file" id="avatarInput" accept="image/*" hidden>
+    <h1>مساحتي الشخصية</h1>
+    <p>كل أدواتي، ملفاتي، ومهامي في مكان واحد</p>
+  </header>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="ابحث عن أداة، ملف، أو مهمة...">
+  </div>
+
+  <section class="section" data-section="sites">
+    <div class="section-header">
+      <span class="icon">🌐</span>
+      <h2>مواقعي</h2>
+      <div class="line"></div>
+    </div>
+    <div class="grid">
+      <a href="https://github.com" target="_blank" class="card">
+        <div class="card-icon">🐙</div>
+        <div class="card-title">GitHub</div>
+        <div class="card-desc">مشاريعي البرمجية</div>
+      </a>
+      <a href="https://www.youtube.com" target="_blank" class="card">
+        <div class="card-icon">▶️</div>
+        <div class="card-title">YouTube</div>
+        <div class="card-desc">قناتي</div>
+      </a>
+      <a href="https://twitter.com" target="_blank" class="card">
+        <div class="card-icon">🐦</div>
+        <div class="card-title">Twitter / X</div>
+        <div class="card-desc">حسابي الشخصي</div>
+      </a>
+      <a href="https://linkedin.com" target="_blank" class="card">
+        <div class="card-icon">💼</div>
+        <div class="card-title">LinkedIn</div>
+        <div class="card-desc">ملفي المهني</div>
+      </a>
+      <a href="https://notion.so" target="_blank" class="card">
+        <div class="card-icon">📝</div>
+        <div class="card-title">Notion</div>
+        <div class="card-desc">ملاحظاتي</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" data-section="ai">
+    <div class="section-header">
+      <span class="icon">🤖</span>
+      <h2>أدوات الذكاء الاصطناعي</h2>
+      <div class="line"></div>
+    </div>
+    <div class="grid">
+      <a href="https://chat.openai.com" target="_blank" class="card">
+        <div class="card-icon">💬</div>
+        <div class="card-title">ChatGPT</div>
+        <div class="card-desc">محادثة ذكية</div>
+      </a>
+      <a href="https://claude.ai" target="_blank" class="card">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">Claude</div>
+        <div class="card-desc">مساعد ذكي</div>
+      </a>
+      <a href="https://gemini.google.com" target="_blank" class="card">
+        <div class="card-icon">✨</div>
+        <div class="card-title">Gemini</div>
+        <div class="card-desc">Google AI</div>
+      </a>
+      <a href="https://www.midjourney.com" target="_blank" class="card">
+        <div class="card-icon">🎨</div>
+        <div class="card-title">Midjourney</div>
+        <div class="card-desc">توليد الصور</div>
+      </a>
+      <a href="https://www.perplexity.ai" target="_blank" class="card">
+        <div class="card-icon">🔎</div>
+        <div class="card-title">Perplexity</div>
+        <div class="card-desc">بحث ذكي</div>
+      </a>
+      <a href="https://runwayml.com" target="_blank" class="card">
+        <div class="card-icon">🎬</div>
+        <div class="card-title">Runway</div>
+        <div class="card-desc">تحرير الفيديو AI</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" data-section="files">
+    <div class="section-header">
+      <span class="icon">📁</span>
+      <h2>ملفاتي</h2>
+      <div class="line"></div>
+    </div>
+    <div class="file-grid">
+      <div class="file-card">
+        <div class="file-icon">📄</div>
+        <div class="file-info">
+          <div class="file-name">السيرة الذاتية.pdf</div>
+          <div class="file-size">2.4 MB</div>
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon">📊</div>
+        <div class="file-info">
+          <div class="file-name">تقرير_المشروع.xlsx</div>
+          <div class="file-size">1.1 MB</div>
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon">🖼️</div>
+        <div class="file-info">
+          <div class="file-name">تصاميمي.zip</div>
+          <div class="file-size">15 MB</div>
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-icon">📝</div>
+        <div class="file-info">
+          <div class="file-name">أفكار.docx</div>
+          <div class="file-size">340 KB</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-section="tasks">
+    <div class="section-header">
+      <span class="icon">✅</span>
+      <h2>مهامي</h2>
+      <div class="line"></div>
+    </div>
+    <div class="task-list" id="taskList">
+      <div class="task">
+        <input type="checkbox" onchange="this.parentElement.classList.toggle('done')">
+        <span class="task-text">مراجعة تصميم الموقع الجديد</span>
+        <span class="task-time">اليوم</span>
+      </div>
+      <div class="task">
+        <input type="checkbox" onchange="this.parentElement.classList.toggle('done')">
+        <span class="task-text">كتابة مقال عن الذكاء الاصطناعي</span>
+        <span class="task-time">غداً</span>
+      </div>
+      <div class="task">
+        <input type="checkbox" onchange="this.parentElement.classList.toggle('done')">
+        <span class="task-text">الرد على إيميلات العملاء</span>
+        <span class="task-time">10:00 ص</span>
+      </div>
+      <div class="task">
+        <input type="checkbox" onchange="this.parentElement.classList.toggle('done')">
+        <span class="task-text">تحضير عرض تقديمي للاجتماع</span>
+        <span class="task-time">الأسبوع القادم</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" data-section="gallery">
+    <div class="section-header">
+      <span class="icon">🖼️</span>
+      <h2>معرض الصور</h2>
+      <div class="line"></div>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <footer class="footer">
+    صُنع بـ <span class="heart">♥</span> — مساحتي الشخصية © 2025
+  </footer>
+</div>
+
+<button class="add-image-btn" onclick="document.getElementById('imageInput').click()" title="إضافة صورة">+</button>
+<input type="file" id="imageInput" accept="image/*" multiple hidden>
+
+<script>
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouse = { x: null, y: null, radius: 150 };
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+window.addEventListener('mousemove', e => {
+  mouse.x = e.x;
+  mouse.y = e.y;
+});
+window.addEventListener('mouseleave', () => {
+  mouse.x = null;
+  mouse.y = null;
+});
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 1;
+    this.vx = (Math.random() - 0.5) * 0.5;
+    this.vy = (Math.random() - 0.5) * 0.5;
+    this.color = ['#6366f1', '#8b5cf6', '#ec4899', '#a5b4fc'][Math.floor(Math.random() * 4)];
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+    if (mouse.x) {
+      const dx = mouse.x - this.x;
+      const dy = mouse.y - this.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < mouse.radius) {
+        const force = (mouse.radius - dist) / mouse.radius;
+        this.x -= dx * force * 0.02;
+        this.y -= dy * force * 0.02;
+      }
+    }
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.globalAlpha = 0.6;
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  particles = [];
+  const count = Math.min(100, Math.floor((canvas.width * canvas.height) / 15000));
+  for (let i = 0; i < count; i++) particles.push(new Particle());
+}
+initParticles();
+
+function connectParticles() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 130) {
+        ctx.beginPath();
+        ctx.strokeStyle = particles[i].color;
+        ctx.globalAlpha = (1 - dist / 130) * 0.15;
+        ctx.lineWidth = 1;
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  connectParticles();
+  requestAnimationFrame(animate);
+}
+animate();
+
+document.getElementById('avatarInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('avatarImg').src = ev.target.result;
+      document.getElementById('avatarImg').style.display = 'block';
+      document.getElementById('avatarText').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+const gallery = document.getElementById('gallery');
+const imageInput = document.getElementById('imageInput');
+
+let savedImages = JSON.parse(localStorage.getItem('myImages') || '[]');
+
+function renderGallery() {
+  gallery.innerHTML = '';
+  if (savedImages.length === 0) {
+    gallery.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:rgba(255,255,255,0.5);padding:40px;">لا توجد صور بعد. اضغط على زر + لإضافة صور</div>';
+    return;
+  }
+  savedImages.forEach((src, idx) => {
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    item.innerHTML = `
+      <img src="${src}" alt="صورة">
+      <button class="delete-btn" onclick="deleteImage(${idx})">✕</button>
+    `;
+    gallery.appendChild(item);
+  });
+}
+
+imageInput.addEventListener('change', e => {
+  const files = Array.from(e.target.files);
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      savedImages.push(ev.target.result);
+      localStorage.setItem('myImages', JSON.stringify(savedImages));
+      renderGallery();
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+function deleteImage(idx) {
+  savedImages.splice(idx, 1);
+  localStorage.setItem('myImages', JSON.stringify(savedImages));
+  renderGallery();
+}
+
+renderGallery();
+
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  const q = e.target.value.toLowerCase().trim();
+  const sections = document.querySelectorAll('.section');
+
+  sections.forEach(section => {
+    const items = section.querySelectorAll('.card, .file-card, .task');
+    let visibleCount = 0;
+
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      if (text.includes(q)) {
+        item.style.display = '';
+        visibleCount++;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+    section.style.display = (visibleCount === 0 && q !== '') ? 'none' : '';
+  });
+});
+</script>
+</body>
+</html>
